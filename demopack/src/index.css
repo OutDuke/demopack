@@ -1,3 +1,102 @@
+/* src/index.css - paste entire file (overwrite) */
+
+/* Google Font - Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+:root{
+  --bg:#0f1724;           /* deep navy for hero */
+  --card:#0b1220;         /* dark card */
+  --muted:#94a3b8;        /* muted text */
+  --accent:#7c3aed;       /* purple accent */
+  --accent-2:#06b6d4;     /* teal accent */
+  --glass: rgba(255,255,255,0.04);
+}
+
+/* Tailwind base (if using Tailwind, keep these) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Basic app styles */
+html,body,#root{ height:100%; }
+body{
+  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, #0b1220 0%, #071021 100%);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  color: #e6eef8;
+}
+
+/* Polished container */
+.container {
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* Card */
+.app-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.04);
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+}
+
+/* Soft button */
+.btn {
+  @apply inline-flex items-center gap-2 px-4 py-2 rounded-md font-semibold;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.btn-primary{
+  background: linear-gradient(90deg,var(--accent), var(--accent-2));
+  color: white;
+  box-shadow: 0 6px 20px rgba(124,58,237,0.18);
+}
+.btn:active{ transform: translateY(1px); }
+
+/* small helper */
+.micro {
+  font-size: .9rem;
+  color: var(--muted);
+}
+
+/* subtle hover for cards */
+.card-hover:hover{
+  transform: translateY(-6px);
+  transition: transform .18s ease;
+}
+
+/* progress pill */
+.progress {
+  height: 10px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress > i {
+  display:block;
+  height:100%;
+  background: linear-gradient(90deg,var(--accent), var(--accent-2));
+  transition: width .25s ease;
+}
+
+/* Floating demo badge */
+.demo-badge {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 9999;
+  background: rgba(0,0,0,0.45);
+  padding: 8px 12px;
+  border-radius: 999px;
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.04);
+  color: #fff;
+  font-weight:600;
+}
 :root {
   --text: #6b6375;
   --text-h: #08060d;

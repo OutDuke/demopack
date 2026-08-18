@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 export default function DemoRenderer({ demo }) {
   const steps = (demo && demo.steps) || [];
 
-  // initialize and reset when steps length changes
   const [completed, setCompleted] = useState(() => Array(steps.length).fill(false));
   useEffect(() => {
     setCompleted(Array(steps.length).fill(false));
@@ -14,26 +13,34 @@ export default function DemoRenderer({ demo }) {
     setCompleted((c) => {
       const next = [...c];
       next[i] = !next[i];
-      // analytics visible in console
       console.log("Onboard.track", { event: "step_toggle", demoId: demo?.id, stepIndex: i, completed: next[i] });
       return next;
     });
   }
 
+  const done = completed.filter(Boolean).length;
+  const pct = steps.length ? Math.round((done / steps.length) * 100) : 0;
+
   if (!steps.length) {
-    return <div className="text-sm text-gray-500">No steps defined.</div>;
+    return <div className="text-sm text-gray-400">No steps defined.</div>;
   }
 
   return (
-    <div className="bg-white p-4 rounded shadow-sm">
+    <div>
+      <div className="mb-3 micro">Progress</div>
+      <div className="progress mb-4" aria-hidden>
+        <i style={{ width: `${pct}%` }}></i>
+      </div>
+
       <div className="space-y-3">
         {steps.map((s, i) => (
-          <div key={i} className="flex items-center gap-3 p-3 border rounded">
+          <div key={i} className="app-card flex items-center gap-3 card-hover">
             <input type="checkbox" checked={!!completed[i]} onChange={() => toggle(i)} />
-            <div>
-              <div className="font-medium">{s}</div>
-              <div className="text-xs text-gray-500">Step {i + 1}</div>
+            <div className="flex-1">
+              <div className="font-medium text-white">{s}</div>
+              <div className="micro">Step {i + 1}</div>
             </div>
+            <div className="micro text-slate-400">{completed[i] ? 'Done' : 'Pending'}</div>
           </div>
         ))}
       </div>

@@ -1,3 +1,4 @@
+// src/pages/CreateDemo.jsx
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import JSZip from 'jszip'
@@ -6,14 +7,9 @@ import { saveAs } from 'file-saver'
 function createId(){ return Date.now().toString(36) }
 
 export default function CreateDemo(){
-const [title, setTitle] = useState('Startup Onboarding');
-const [desc, setDesc] = useState('Complete these steps to get started');
-const [steps, setSteps] = useState([
-  'Create your account',
-  'Verify email',
-  'Complete profile',
-  'Explore dashboard'
-]);
+  const [title, setTitle] = useState('Signup flow — new user')
+  const [desc, setDesc] = useState('Quick onboarding checklist')
+  const [steps, setSteps] = useState(['Signup','Verify email','Complete profile','Start first project'])
   const nav = useNavigate()
 
   function addStep(){ setSteps(s => [...s, `Step ${s.length+1}`]) }
@@ -30,11 +26,9 @@ const [steps, setSteps] = useState([
   }
 
   async function exportWidget(){
-    // builds a zip containing the widget script + README + demo json
     const id = createId()
     const demo = { id, title, desc, steps, createdAt: new Date().toISOString() }
     const zip = new JSZip()
-    // the widget script (we will include a simple public widget file; here we add a small example)
     const widgetScript = await fetch('/onboard-widget.js').then(r=>r.text())
     zip.file('onboard-widget.js', widgetScript)
     zip.file('demo.json', JSON.stringify(demo, null, 2))
@@ -44,50 +38,40 @@ const [steps, setSteps] = useState([
   }
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded shadow">
-      <h2 className="text-lg font-semibold mb-4">Create Demo (60s)</h2>
-      <label className="block mb-2">Title
-        <input value={title} onChange={e=>setTitle(e.target.value)} className="w-full border p-2 mt-1" />
-      </label>
-      <label className="block mb-2">Short description
-        <input value={desc} onChange={e=>setDesc(e.target.value)} className="w-full border p-2 mt-1" />
-      </label>
+    <div className="space-y-6">
+      <div className="flex items-start gap-6">
+        <div className="flex-1">
+          <label className="block text-sm text-slate-300 mb-1">Title</label>
+          <input value={title} onChange={e=>setTitle(e.target.value)} className="w-full p-3 rounded-md bg-white/3 border border-white/6" />
+        </div>
 
-      <div className="mb-4">
-        <h3 className="font-medium mb-2">Steps</h3>
-        {steps.map((s,i)=>(
-          <div key={i} className="flex gap-2 mb-2">
-            <input className="flex-1 border p-2" value={s} onChange={e=>updateStep(i, e.target.value)} />
-            <button onClick={()=>removeStep(i)} className="px-3">Del</button>
+        <div style={{minWidth:220}}>
+          <div className="micro mb-1">Actions</div>
+          <div className="flex flex-col gap-2">
+            <button onClick={saveDemo} className="btn btn-primary">Publish demo</button>
+            <button onClick={exportWidget} className="btn bg-white/5">Export widget ZIP</button>
+            <button onClick={() => { navigator.clipboard.writeText(`<script src="${location.origin}/onboard-widget.js"></script>`); alert('Embed snippet copied'); }} className="btn bg-white/5">Copy Snippet</button>
           </div>
-        ))}
-        <button onClick={addStep} className="mt-2 px-3 py-1 bg-gray-100">Add step</button>
+        </div>
       </div>
 
-      <div className="flex gap-2">
-        <button onClick={saveDemo} className="bg-blue-600 text-white px-4 py-2 rounded">Publish demo</button>
-        <button onClick={exportWidget} className="bg-green-600 text-white px-4 py-2 rounded">Export widget ZIP</button>
-      </div>
-      <button
-  onClick={() => {
-    const snippet = `
-<div id="onboard-root"></div>
-<script src="https://yourdomain.vercel.app/onboard-widget.js"></script>
-<script>
-Onboard.init({
-  container: "#onboard-root",
-  demo: ${JSON.stringify({ title, steps })}
-});
-</script>`;
-    navigator.clipboard.writeText(snippet);
-    alert("Snippet copied!");
-  }}
-  className="bg-purple-600 text-white px-4 py-2 rounded"
->
-  Copy Embed Code
-</button>
+      <div className="app-card">
+        <h3 className="font-semibold mb-3">Steps</h3>
+        <div className="space-y-3">
+          {steps.map((s,i)=>(
+            <div key={i} className="flex items-center gap-3">
+              <input className="p-2 w-10 rounded-md bg-white/3 border border-white/6" value={s} onChange={e=>updateStep(i, e.target.value)} />
+              <button onClick={()=>removeStep(i)} className="btn bg-red-600/80 text-white">Delete</button>
+            </div>
+          ))}
+        </div>
 
-      <p className="mt-4 text-sm text-gray-600">Tip: use "Export widget" to produce a downloadable package you can hand over to buyers (includes widget script + demo json + README).</p>
+        <div className="mt-4">
+          <button onClick={addStep} className="btn bg-white/5">Add step</button>
+        </div>
+      </div>
+
+      <p className="micro">Tip: Use the "Export widget ZIP" to hand over code to buyers with README and demo json included.</p>
     </div>
   )
 }
